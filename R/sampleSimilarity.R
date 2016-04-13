@@ -1,8 +1,3 @@
-#' @title Generate plot of sample identify matrix and PCA
-#' @description Heatmap of sample similarity will be created along with a PCA
-#' plot labelled with control and experimental groups.
-#' @usage sampleSimilarity(runSAM.obj)
-#' @param runSAM.obj Object returned from call to runSAM
 #' @import ggplot2
 
 sampleSimilarity <- function(runSAM.obj) {
@@ -10,11 +5,21 @@ sampleSimilarity <- function(runSAM.obj) {
   groups = sapply(runSAM.obj$response,function(sample) 
     ifelse(sample == 1,"control","experiment"))
   
-  ps.similarityFile=paste0("./",runSAM.obj$pipelineName,"_pipeline/",
-                        runSAM.obj$pipelineName,"_sampleSimilarity.ps")  
-  pdf.similarityFile=paste0("./",runSAM.obj$pipelineName,"_pipeline/",
-                        runSAM.obj$pipelineName,"_sampleSimilarity.pdf")  
-  
+  if ("classCompareName" %in% names(runSAM.obj)) {
+    ps.similarityFile=paste0("./",runSAM.obj$pipelineName,"_pipeline/",
+                          runSAM.obj$pipelineName,"_sampleSimilarity-",
+                          runSAM.obj$classCompareName,".ps")  
+    pdf.similarityFile=paste0("./",runSAM.obj$pipelineName,"_pipeline/",
+                          runSAM.obj$pipelineName,"_sampleSimilarity-",
+                          runSAM.obj$classCompareName,".pdf")  
+  }
+  else {
+    ps.similarityFile=paste0("./",runSAM.obj$pipelineName,"_pipeline/",
+                          runSAM.obj$pipelineName,"_sampleSimilarity.ps")  
+    pdf.similarityFile=paste0("./",runSAM.obj$pipelineName,"_pipeline/",
+                          runSAM.obj$pipelineName,"_sampleSimilarity.pdf")  
+  }
+
   postscript(file=ps.similarityFile,paper="letter")
   
   ## Create heatmap plot of sample similarity
